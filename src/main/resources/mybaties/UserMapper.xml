@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anotherme17.anothernote.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.anotherme17.anothernote.entity.UserEntity">
+        <id property="id" column="UserID"/>
+        <result property="username" column="UserName"/>
+    </resultMap>
+
+    <insert id="insertUserAutoKey" parameterType="com.anotherme17.anothernote.entity.UserEntity">
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+            SELECT replace(uuid(),'-','') FROM dual
+        </selectKey>
+
+        INSERT INTO A_User (ID,Phone,UserName,Password,Email)
+        VALUES (#{id},#{phone},#{username},#{password},#{email})
+    </insert>
+
+</mapper>
