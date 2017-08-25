@@ -1,14 +1,28 @@
 package com.anotherme17.anothernote.entity;
 
+
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
  * 用户表
  */
+@ApiModel(value = "User", description = "用户对象")
 public class UserEntity {
 
-    private String id="123";
+    @ApiModelProperty(value = "ID")
+    private String id;
+
+    @ApiModelProperty(value = "电话号码")
     private String phone;
+
+    @ApiModelProperty(value = "用户名")
     private String username;
+
+    @ApiModelProperty(value = "密码", hidden = true)
     private String password;
+
+    @ApiModelProperty(value = "邮箱")
     private String email;
 
     public UserEntity() {
@@ -59,5 +73,16 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "id='" + id + '\'' +
+                ", phone='" + phone + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

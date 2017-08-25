@@ -9,10 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * UserMapper
  */
+@Mapper
 @Repository
 @Transactional
-@Mapper
 public interface UserMapper {
 
     public void insertUserAutoKey(UserEntity user);
+
 }

@@ -4,17 +4,34 @@
 <mapper namespace="com.anotherme17.anothernote.mapper.UserMapper">
 
     <resultMap id="userResultMap" type="com.anotherme17.anothernote.entity.UserEntity">
-        <id property="id" column="UserID"/>
+        <id property="id" column="ID"/>
         <result property="username" column="UserName"/>
+        <result property="phone" column="Phone"/>
+        <result property="email" column="Email"/>
     </resultMap>
 
+    <!--插入用户  自动生成主键-->
     <insert id="insertUserAutoKey" parameterType="com.anotherme17.anothernote.entity.UserEntity">
         <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
             SELECT replace(uuid(),'-','') FROM dual
         </selectKey>
-
         INSERT INTO A_User (ID,Phone,UserName,Password,Email)
         VALUES (#{id},#{phone},#{username},#{password},#{email})
     </insert>
+
+    <select id="getUserList" resultType="userResultMap">
+        SELECT u.ID,u.UserName,u.Email
+        <include refid="getUsers"/>
+    </select>
+
+    <select id="getUserCount" resultType="java.lang.Integer">
+        SELECT COUNT (0)
+        <include refid="getUsers"/>
+    </select>
+
+    <sql id="getUsers">
+        FROM A_User u
+        WHERE 1=1
+    </sql>
 
 </mapper>
