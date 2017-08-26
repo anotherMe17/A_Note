@@ -11,7 +11,7 @@
     </resultMap>
 
     <!--插入用户  自动生成主键-->
-    <insert id="insertUserAutoKey" parameterType="com.anotherme17.anothernote.entity.UserEntity">
+    <insert id="insertUserAutoKey" parameterType="UserEntity">
         <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
             SELECT replace(uuid(),'-','') FROM dual
         </selectKey>
