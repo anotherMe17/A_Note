@@ -13,5 +13,17 @@ public interface UserService {
      */
     void insertUser(UserEntity user);
 
-    BasePageResult<UserEntity> getUserList();
+    /**
+     * 删除用户
+     */
+    void deleteUser(String id);
+
+    BasePageResult<UserEntity> getUserList(int page, int rows);
+
+    /**
+     * 通过ID获取用户详情
+     */
+    UserEntity getUserByID(String id);
+
+    void updateUser(UserEntity user);
 }
