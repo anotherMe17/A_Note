@@ -94,6 +94,13 @@
             <version>${springfox.version}</version>
         </dependency>
 
+        <!--mybatis 分页插件-->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>4.1.4</version>
+        </dependency>
+
     </dependencies>
 
     <build>

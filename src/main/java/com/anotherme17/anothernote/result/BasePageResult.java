@@ -30,7 +30,7 @@ public class BasePageResult<T> {
     private int totalPageCount;
 
     @ApiModelProperty(value = "记录总数")
-    private int record;
+    private long record;
 
     @ApiModelProperty(value = "下一页")
     private Integer nextPage;
@@ -38,7 +38,7 @@ public class BasePageResult<T> {
     @ApiModelProperty(value = "上一页")
     private Integer prePage;
 
-    public BasePageResult(int code, String msg, List<T> data, int pageSize, int pageIndex, int record) {
+    public BasePageResult(int code, String msg, List<T> data, int pageSize, int pageIndex, long record) {
         this.code = code;
         this.msg = msg;
         this.data = data;
@@ -47,7 +47,7 @@ public class BasePageResult<T> {
         this.record = record;
 
         this.totalPageCount = (record / pageSize) == 0 ? 1 :
-                (record % pageSize) == 0 ? (record / pageSize) : (record / pageSize) + 1;
+                (int) ((record % pageSize) == 0 ? (record / pageSize) : (record / pageSize) + 1);
 
         this.nextPage = pageIndex * pageSize > record ? pageIndex : pageIndex + 1;
 
@@ -102,11 +102,11 @@ public class BasePageResult<T> {
         this.totalPageCount = totalPageCount;
     }
 
-    public int getRecord() {
+    public long getRecord() {
         return record;
     }
 
-    public void setRecord(int record) {
+    public void setRecord(long record) {
         this.record = record;
     }
 

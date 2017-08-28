@@ -4,6 +4,8 @@ import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.mapper.UserMapper;
 import com.anotherme17.anothernote.result.BasePageResult;
 import com.anotherme17.anothernote.service.UserService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,11 +34,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public BasePageResult<UserEntity> getUserList(int page, int rows) {
-        int start = page * rows;
-        int end = start + rows;
-        Integer count = mUserMapper.getUserCount();
-        List<UserEntity> users = mUserMapper.getUserList(start, end);
-        return new BasePageResult<>(1, "ok", users, rows, page, count == null ? 0 : count);
+        /*分页处理*/
+        PageHelper.startPage(page, rows);
+
+        List<UserEntity> users = mUserMapper.getUserList();
+
+        PageInfo<UserEntity> pageInfo = new PageInfo<>(users);
+
+        return new BasePageResult<>(1, "ok", users, rows, page, pageInfo.getTotal());
     }
 
     @Override

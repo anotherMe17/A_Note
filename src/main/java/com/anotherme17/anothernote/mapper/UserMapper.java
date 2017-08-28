@@ -3,7 +3,6 @@ package com.anotherme17.anothernote.mapper;
 import com.anotherme17.anothernote.entity.UserEntity;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,6 +44,6 @@ public interface UserMapper {
     /**
      * 获取用户列表-分页
      */
-    List<UserEntity> getUserList(@Param("start") int start, @Param("end") int end);
+    List<UserEntity> getUserList();
 
 }
