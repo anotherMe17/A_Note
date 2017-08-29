@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anotherme17.anothernote.mapper.StrokeMapper">
+
+    <resultMap id="strokeResultMap" type="StrokeEntity">
+        <id property="id" column="ID"/>
+        <result property="title" column="Title"/>
+        <result property="content" column="Content"/>
+        <result property="strokePlanID" column="StrokePlanID"/>
+        <result property="forUserID" column="ForUserID"/>
+        <result property="createTime" column="CreateTime"/>
+        <result property="startTime" column="StartTime"/>
+        <result property="endTime" column="EndTime"/>
+        <result property="state" column="State"/>
+    </resultMap>
+
+    <!--插入行程  自动生成主键-->
+    <insert id="insertStrokeAutoKey" parameterType="StrokeEntity">
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+            SELECT replace(uuid(),'-','') FROM dual
+        </selectKey>
+        INSERT INTO A_Stroke
+        (ID,Title,Content,StrokePlanID,ForUserID,CreateTime,StartTime,EndTime,State)
+        VALUES (#{id},#{title},#{content},#{strokePlanID},#{forUserID},
+        #{createTime,jdbcType=TIMESTAMP},#{startTime,jdbcType=TIMESTAMP},#{endTime,jdbcType=TIMESTAMP},
+        #{state})
+    </insert>
+
+    <delete id="deleteStroke" parameterType="java.lang.String">
+        DELETE FROM A_Stroke
+        WHERE ID = #{id}
+    </delete>
+
+    <!--更新行程-->
+    <update id="updateStroke" parameterType="StrokeEntity">
+        UPDATE A_Stroke s
+        <set>
+            <if test="title != null">
+                s.Title = #{title}
+            </if>
+            <if test="content != null">
+                s.Content = #{content}
+            </if>
+            <if test="startTime != null">
+                s.StartTime = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                s.EndTime = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+        WHERE s.ID = #{id}
+    </update>
+
+    <select id="getStrokeByID" parameterType="java.lang.String" resultMap="strokeResultMap">
+        SELECT ID,Title,Content,StrokePlanID,ForUserID,CreateTime,StartTime,EndTime,State
+        FROM A_Stroke
+        WHERE ID = #{id}
+    </select>
+
+</mapper>
