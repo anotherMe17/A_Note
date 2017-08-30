@@ -22,7 +22,7 @@ public class AnothernoteApplication {
     public Docket swaggerSpringMvcPlugin() {
         ApiInfo apiInfo = new ApiInfo("AnotherNote", "网络记事本", "1.0.0",
                 "", "anotherme@aliyun.com", null, null);
-        Docket docket = new Docket(DocumentationType.SWAGGER_2).select().paths(regex("/v1/*/.*")).build()
+        Docket docket = new Docket(DocumentationType.SWAGGER_2).select().paths(regex("/*/*.*")).build()
                 .apiInfo(apiInfo).useDefaultResponseMessages(false);
         return docket;
     }
