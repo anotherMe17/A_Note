@@ -4,6 +4,7 @@ import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.service.UserService;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AccountException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -15,6 +16,7 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,9 +45,16 @@ public class MyShiroRealm extends AuthorizingRealm {
         String password = String.valueOf(token.getCredentials());
 
         /*登录验证*/
-        UserEntity user = mUserService.getUserByID("4979bd0b896a11e780b84ccc6a6d905e");
-        System.out.println(user.toString());
-        user.setPassword("1234");
+        List<UserEntity> users = mUserService.authentication(username, password);
+
+        UserEntity user = null;
+
+        if (users != null && users.size() > 0) {
+            user = users.get(0);
+        }
+
+        if (user==null)
+            throw new AccountException("帐号或密码不正确！");
 
         // 从数据库获取对应用户名密码的用户
         /*List<UserEntity> userList = sysUserService.selectByMap(map);

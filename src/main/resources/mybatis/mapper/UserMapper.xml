@@ -10,6 +10,13 @@
         <result property="email" column="Email"/>
     </resultMap>
 
+    <resultMap id="userAllMap" type="UserEntity">
+        <id property="id" column="ID"/>
+        <result property="username" column="UserName"/>
+        <result property="phone" column="Phone"/>
+        <result property="email" column="Email"/>
+    </resultMap>
+
     <!--插入用户  自动生成主键-->
     <insert id="insertUserAutoKey" parameterType="UserEntity">
         <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
@@ -59,6 +66,13 @@
         DELETE FROM A_User
         WHERE ID = #{id}
     </delete>
+
+    <!--验证用户-->
+    <select id="authentication" resultMap="userAllMap">
+        SELECT * FROM A_User
+        WHERE UserName = #{username}
+        AND Password = #{password}
+    </select>
 
     <sql id="getUsersWhere">
         FROM A_User u

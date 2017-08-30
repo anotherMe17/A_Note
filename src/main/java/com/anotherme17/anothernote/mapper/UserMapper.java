@@ -3,6 +3,7 @@ package com.anotherme17.anothernote.mapper;
 import com.anotherme17.anothernote.entity.UserEntity;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -43,5 +44,7 @@ public interface UserMapper {
      * 获取用户列表-分页
      */
     List<UserEntity> getUserList();
+
+    List<UserEntity> authentication(@Param("username") String username, @Param("password") String password);
 
 }
