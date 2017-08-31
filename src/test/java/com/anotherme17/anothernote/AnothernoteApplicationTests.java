@@ -3,6 +3,7 @@ package com.anotherme17.anothernote;
 import com.anotherme17.anothernote.mapper.PermissionMapper;
 import com.anotherme17.anothernote.mapper.RoleMapper;
 import com.anotherme17.anothernote.mapper.UserMapper;
+import com.anotherme17.anothernote.service.impl.MailService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,19 +25,15 @@ public class AnothernoteApplicationTests {
     @Autowired
     PermissionMapper mPermissionMapper;
 
+    @Autowired
+    private MailService mailService;
+
     @Test
     @Transactional
     public void contextLoads() {
-       /* UserEntity user = new UserEntity("123", "456", "789", "11");
 
-        mUserMapper.insertUserAutoKey(user);*/
-        System.out.println("=================================================");
-        System.out.println(mRoleMapper.getRoleByUserID("4979bd0b896a11e780b84ccc6a6d905e").toString());
-        System.out.println("=================================================");
+        mailService.sendSimpleMail("411867400@qq.com", "主题：简单邮件", "测试邮件内容");
 
-        System.out.println("=================================================");
-        System.out.println(mPermissionMapper.getPermissionByUserID("4979bd0b896a11e780b84ccc6a6d905e").toString());
-        System.out.println("=================================================");
     }
 
 }
