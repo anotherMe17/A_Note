@@ -26,21 +26,10 @@
         VALUES (#{id},#{phone},#{username},#{password},#{email})
     </insert>
 
-    <select id="getUserByID" parameterType="java.lang.String" resultMap="userResultMap">
-        SELECT u.ID,u.UserName,u.Email,u.Phone
-        FROM A_User u
-        WHERE u.ID = #{id}
-    </select>
-
-    <select id="getUserList" parameterType="java.lang.Integer" resultMap="userResultMap">
-        SELECT u.ID,u.UserName,u.Email,u.Phone
-        <include refid="getUsersWhere"/>
-    </select>
-
-    <select id="getUserCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-        SELECT count(0)
-        <include refid="getUsersWhere"/>
-    </select>
+    <delete id="deleteUser" parameterType="java.lang.String">
+        DELETE FROM A_User
+        WHERE ID = #{id}
+    </delete>
 
     <!--更新用户信息-->
     <update id="updateUser" parameterType="UserEntity">
@@ -62,10 +51,28 @@
         WHERE u.ID = #{id}
     </update>
 
-    <delete id="deleteUser" parameterType="java.lang.String">
-        DELETE FROM A_User
+    <!--更新登录时间-->
+    <update id="updateLastLoginTime">
+        UPDATE A_User
+        SET LastLoginTime = #{loginTime,jdbcType=TIMESTAMP}
         WHERE ID = #{id}
-    </delete>
+    </update>
+
+    <select id="getUserByID" parameterType="java.lang.String" resultMap="userResultMap">
+        SELECT u.ID,u.UserName,u.Email,u.Phone
+        FROM A_User u
+        WHERE u.ID = #{id}
+    </select>
+
+    <select id="getUserList" parameterType="java.lang.Integer" resultMap="userResultMap">
+        SELECT u.ID,u.UserName,u.Email,u.Phone
+        <include refid="getUsersWhere"/>
+    </select>
+
+    <select id="getUserCount" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT count(0)
+        <include refid="getUsersWhere"/>
+    </select>
 
     <!--验证用户-->
     <select id="authentication" resultMap="userAllMap">

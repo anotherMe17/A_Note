@@ -5,6 +5,7 @@ import com.anotherme17.anothernote.result.BasePageResult;
 import com.anotherme17.anothernote.result.BaseResult;
 import com.anotherme17.anothernote.service.UserService;
 
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class UserAction {
             produces = "application/json", tags = {"用户"})
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    @RequiresPermissions("admin:user:list")
+    @RequiresPermissions(value = {"admin:user:list","user:get:list"},logical = Logical.OR)
     public BasePageResult<UserEntity> getUserList(
             @ApiParam(value = "第几页", required = true) @RequestParam(value = "page") int page,
             @ApiParam(value = "每页多少行", required = true) @RequestParam(value = "rows") int rows
@@ -49,6 +50,7 @@ public class UserAction {
             produces = "application/json", tags = {"用户"})
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequiresPermissions("admin:user:get")
     public BaseResult<UserEntity> getUser(@PathVariable String id) {
         return new BaseResult<>(1, "ok", mUserService.getUserByID(id));
     }
@@ -58,6 +60,7 @@ public class UserAction {
             produces = "application/json", tags = {"用户"})
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequiresPermissions("admin:user:create")
     public BaseResult<UserEntity> postUser(
             @ApiParam(value = "用户名", required = true) @RequestParam(value = "username") String username,
             @ApiParam(value = "电话号码", required = true) @RequestParam(value = "phone") String phone,
@@ -75,6 +78,7 @@ public class UserAction {
             produces = "application/json", tags = {"用户"})
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+    @RequiresPermissions("admin:user:update")
     public BaseResult<UserEntity> putUser(
             @PathVariable String id,
             @ApiParam(value = "用户名") @RequestParam(value = "username", required = false) String username,

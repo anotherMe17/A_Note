@@ -12,6 +12,10 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(value = "User", description = "用户对象")
 public class UserEntity {
 
+    public static final int STATE_UN_ACTIVE = 0;
+    public static final int STATE_ACTIVE = 1;
+    public static final int STATE_LOCKED = 2;
+
     @ApiModelProperty(value = "ID")
     private String id;
 
@@ -26,6 +30,8 @@ public class UserEntity {
 
     @ApiModelProperty(value = "邮箱")
     private String email;
+
+    private int state = STATE_UN_ACTIVE;
 
     private Set<RoleEntity> roles;
 
@@ -85,6 +91,14 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     @Override

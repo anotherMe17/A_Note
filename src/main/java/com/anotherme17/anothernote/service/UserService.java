@@ -3,6 +3,7 @@ package com.anotherme17.anothernote.service;
 import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.result.BasePageResult;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public interface UserService {
     UserEntity getUserByID(String id);
 
     void updateUser(UserEntity user);
+
+    void updateLastLoginTime(String id, Date loginTime);
 
     List<UserEntity> authentication(String username, String password);
 }

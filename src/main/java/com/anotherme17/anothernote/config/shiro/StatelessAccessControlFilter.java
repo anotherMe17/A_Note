@@ -21,6 +21,8 @@ import javax.servlet.http.HttpServletResponse;
  * 访问控制过滤器
  */
 public class StatelessAccessControlFilter extends AccessControlFilter {
+
+
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
         return false;
@@ -31,20 +33,20 @@ public class StatelessAccessControlFilter extends AccessControlFilter {
         String username = request.getParameter("u");
         String clientDigest = request.getParameter("d");
 
-        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(clientDigest)) {
-            onLoginFail(response);
-            return false;
-        }
-
-        /*认证验证*/
-        StatelessToken token = new StatelessToken(username, clientDigest);
-
         /*获取当前的Subject*/
         Subject currentUser = SecurityUtils.getSubject();
 
         /*已经登录的用户不做过滤*/
         if (currentUser.isAuthenticated())
             return true;
+
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(clientDigest)) {
+            onLoginFail(response);
+            return false;
+        }
+
+         /*认证验证*/
+        StatelessToken token = new StatelessToken(username, clientDigest);
 
         try {
             //在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查。

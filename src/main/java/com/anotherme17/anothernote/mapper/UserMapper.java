@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,6 +30,11 @@ public interface UserMapper {
      * 更新用户
      */
     void updateUser(UserEntity user);
+
+    /**
+     * 更新登录时间
+     */
+    void updateLastLoginTime(@Param("id") String id, @Param("loginTime") Date loginTime);
 
     /**
      * 通过ID获取用户信息
