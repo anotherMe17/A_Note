@@ -12,6 +12,7 @@ import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
 import org.apache.shiro.authc.DisabledAccountException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.SimpleAuthenticationInfo;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -20,10 +21,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Shiro 认证
@@ -38,6 +42,15 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Autowired
     private PermissionMapper mPermissionMapper;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    //用户登录次数计数  redisKey 前缀
+    private String SHIRO_LOGIN_COUNT = "shiro_login_count_";
+
+    //用户登录是否被锁定    一小时 redisKey 前缀
+    private String SHIRO_IS_LOCK = "shiro_is_lock_";
 
     public boolean supports(AuthenticationToken token) {
         //仅支持StatelessToken类型的Token
@@ -57,6 +70,20 @@ public class MyShiroRealm extends AuthorizingRealm {
         String username = String.valueOf(token.getPrincipal());
         String password = String.valueOf(token.getCredentials());
 
+        //访问一次，计数一次
+        ValueOperations<String, String> opsForValue = stringRedisTemplate.opsForValue();
+        opsForValue.increment(SHIRO_LOGIN_COUNT + username, 1);
+
+        //计数大于5时，设置用户被锁定一小时
+        if (Integer.parseInt(opsForValue.get(SHIRO_LOGIN_COUNT + username)) >= 5) {
+            opsForValue.set(SHIRO_IS_LOCK + username, "LOCK");
+            stringRedisTemplate.expire(SHIRO_IS_LOCK + username, 1, TimeUnit.HOURS);
+        }
+
+        if ("LOCK".equals(opsForValue.get(SHIRO_IS_LOCK + username))) {
+            throw new ExcessiveAttemptsException("由于密码输入错误次数大于5次，帐号已经禁止登录！");
+        }
+
         /*登录验证*/
         List<UserEntity> users = mUserService.authentication(username, password);
 
@@ -73,6 +100,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         } else if (user.getState() == UserEntity.STATE_UN_ACTIVE) {
             throw new DisabledAccountException("帐号未激活！");
         } else {
+            opsForValue.set(SHIRO_LOGIN_COUNT + username, "0");
             mUserService.updateLastLoginTime(user.getId(), new Date());
         }
         return new SimpleAuthenticationInfo(user, user.getPassword(), getName());
