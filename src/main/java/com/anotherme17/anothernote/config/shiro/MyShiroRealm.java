@@ -1,6 +1,10 @@
 package com.anotherme17.anothernote.config.shiro;
 
+import com.anotherme17.anothernote.entity.PermissionEntity;
+import com.anotherme17.anothernote.entity.RoleEntity;
 import com.anotherme17.anothernote.entity.UserEntity;
+import com.anotherme17.anothernote.mapper.PermissionMapper;
+import com.anotherme17.anothernote.mapper.RoleMapper;
 import com.anotherme17.anothernote.service.UserService;
 
 import org.apache.shiro.SecurityUtils;
@@ -15,7 +19,6 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -26,6 +29,12 @@ public class MyShiroRealm extends AuthorizingRealm {
 
     @Autowired
     private UserService mUserService;
+
+    @Autowired
+    private RoleMapper mRoleMapper;
+
+    @Autowired
+    private PermissionMapper mPermissionMapper;
 
     public boolean supports(AuthenticationToken token) {
         //仅支持StatelessToken类型的Token
@@ -41,6 +50,7 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
+        System.out.println("doGetAuthenticationInfo");
         String username = String.valueOf(token.getPrincipal());
         String password = String.valueOf(token.getCredentials());
 
@@ -53,7 +63,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             user = users.get(0);
         }
 
-        if (user==null)
+        if (user == null)
             throw new AccountException("帐号或密码不正确！");
 
         // 从数据库获取对应用户名密码的用户
@@ -85,31 +95,19 @@ public class MyShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         System.out.println("doGetAuthorizationInfo");
-        System.out.println(SecurityUtils.getSubject().getPrincipal().toString());
-       /* UserEntity token = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        String userId = token.getId();*/
+        UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         //根据用户ID查询角色（role），放入到Authorization里。
-    /*Map<String, Object> map = new HashMap<String, Object>();
-    map.put("user_id", userId);
-    List<SysRole> roleList = sysRoleService.selectByMap(map);
-    Set<String> roleSet = new HashSet<String>();
-    for(SysRole role : roleList){
-        roleSet.add(role.getType());
-    }*/
-        //实际开发，当前登录用户的角色和权限信息是从数据库来获取的，我这里写死是为了方便测试
-        Set<String> roleSet = new HashSet<String>();
-        roleSet.add("100002");
-        info.setRoles(roleSet);
-        //根据用户ID查询权限（permission），放入到Authorization里。
-    /*List<SysPermission> permissionList = sysPermissionService.selectByMap(map);
-    Set<String> permissionSet = new HashSet<String>();
-    for(SysPermission Permission : permissionList){
-        permissionSet.add(Permission.getName());
-    }*/
-        Set<String> permissionSet = new HashSet<String>();
-        permissionSet.add("权限添加");
-        info.setStringPermissions(permissionSet);
+        Set<RoleEntity> roles = mRoleMapper.getRoleByUserID(user.getId());
+        for (RoleEntity role : roles) {
+            info.addRole(role.getRole());
+        }
+
+        /*查询权限*/
+        Set<PermissionEntity> permissions = mPermissionMapper.getPermissionByUserID(user.getId());
+        for (PermissionEntity permission : permissions) {
+            info.addStringPermission(permission.getPermission());
+        }
         return info;
     }
 }

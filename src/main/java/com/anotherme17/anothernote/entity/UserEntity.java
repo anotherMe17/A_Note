@@ -1,6 +1,8 @@
 package com.anotherme17.anothernote.entity;
 
 
+import java.util.Set;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -25,6 +27,8 @@ public class UserEntity {
     @ApiModelProperty(value = "邮箱")
     private String email;
 
+    private Set<RoleEntity> roles;
+
     public UserEntity() {
     }
 
@@ -33,6 +37,14 @@ public class UserEntity {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
     }
 
     public String getId() {

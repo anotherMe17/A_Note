@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anotherme17.anothernote.mapper.RoleMapper">
+
+    <resultMap id="roleResultMap" type="RoleEntity">
+        <id property="id" column="ID"/>
+        <result property="role" column="Role"/>
+        <result property="available" column="Available"/>
+    </resultMap>
+
+    <select id="getRoleByUserID" parameterType="java.lang.String"
+            resultMap="roleResultMap">
+        SELECT r.ID,r.Role,r.Available
+        FROM M_User_Role ur
+        INNER JOIN A_Role r ON ur.RoleID = r.ID
+        WHERE ur.UserID = #{id}
+        AND r.Available = 1
+    </select>
+
+</mapper>

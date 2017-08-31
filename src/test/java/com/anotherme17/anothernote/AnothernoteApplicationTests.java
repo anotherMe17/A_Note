@@ -1,6 +1,7 @@
 package com.anotherme17.anothernote;
 
-import com.anotherme17.anothernote.entity.UserEntity;
+import com.anotherme17.anothernote.mapper.PermissionMapper;
+import com.anotherme17.anothernote.mapper.RoleMapper;
 import com.anotherme17.anothernote.mapper.UserMapper;
 
 import org.junit.Test;
@@ -17,12 +18,25 @@ public class AnothernoteApplicationTests {
     @Autowired
     UserMapper mUserMapper;
 
+    @Autowired
+    RoleMapper mRoleMapper;
+
+    @Autowired
+    PermissionMapper mPermissionMapper;
+
     @Test
     @Transactional
     public void contextLoads() {
-        UserEntity user = new UserEntity("123", "456", "789", "11");
+       /* UserEntity user = new UserEntity("123", "456", "789", "11");
 
-        mUserMapper.insertUserAutoKey(user);
+        mUserMapper.insertUserAutoKey(user);*/
+        System.out.println("=================================================");
+        System.out.println(mRoleMapper.getRoleByUserID("4979bd0b896a11e780b84ccc6a6d905e").toString());
+        System.out.println("=================================================");
+
+        System.out.println("=================================================");
+        System.out.println(mPermissionMapper.getPermissionByUserID("4979bd0b896a11e780b84ccc6a6d905e").toString());
+        System.out.println("=================================================");
     }
 
 }

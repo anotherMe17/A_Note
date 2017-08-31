@@ -5,6 +5,7 @@ import com.anotherme17.anothernote.result.BasePageResult;
 import com.anotherme17.anothernote.result.BaseResult;
 import com.anotherme17.anothernote.service.UserService;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class UserAction {
             produces = "application/json", tags = {"用户"})
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequiresPermissions("admin:user:list")
     public BasePageResult<UserEntity> getUserList(
             @ApiParam(value = "第几页", required = true) @RequestParam(value = "page") int page,
             @ApiParam(value = "每页多少行", required = true) @RequestParam(value = "rows") int rows

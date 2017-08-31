@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anotherme17.anothernote.mapper.PermissionMapper">
+
+    <resultMap id="permissionResultMapper" type="PermissionEntity">
+        <id property="id" column="ID"/>
+        <result property="permission" column="Permission"/>
+    </resultMap>
+
+    <select id="getPermissionByUserID" parameterType="java.lang.String"
+            resultMap="permissionResultMapper">
+        SELECT p.ID,p.Permission
+        FROM M_User_Role ur
+        INNER JOIN A_Role r ON ur.RoleID = r.ID
+        INNER JOIN M_Role_Permission rp ON rp.RoleID = r.ID
+        INNER JOIN A_Permission p ON p.ID = rp.PermissionID
+        WHERE ur.UserID = #{id}
+        AND r.Available = 1
+        AND p.Available = 1
+    </select>
+</mapper>
