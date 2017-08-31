@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -28,7 +29,18 @@ public class StatelessAccessControlFilter extends AccessControlFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest servletRequest, ServletResponse servletResponse, Object o) throws Exception {
-        return false;
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        String authorization = request.getHeader("Authorization");
+        if (TextUtils.isEmpty(authorization))
+            return false;
+        try {
+            StatelessToken token = new StatelessToken(null, authorization);
+            SecurityUtils.getSubject().login(token);
+        } catch (AuthenticationException ae) {
+            return false;
+        }
+        return true;
     }
 
     @Override

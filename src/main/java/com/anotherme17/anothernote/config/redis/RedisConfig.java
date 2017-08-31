@@ -1,5 +1,7 @@
 package com.anotherme17.anothernote.config.redis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
@@ -15,6 +17,9 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @Value("${spring.redis.host}")
     private String host;
 
@@ -32,8 +37,8 @@ public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public JedisPool redisPoolFactory() {
-        System.out.println("JedisPool注入成功！！");
-        System.out.println("redis地址：" + host + ":" + port);
+        logger.info("JedisPool注入成功！！");
+        logger.info("redis地址：" + host + ":" + port);
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(maxIdle);
         jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);

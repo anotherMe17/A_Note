@@ -31,6 +31,8 @@ public class UserEntity {
     @ApiModelProperty(value = "邮箱")
     private String email;
 
+    private String salt;
+
     private int state = STATE_UN_ACTIVE;
 
     private Set<RoleEntity> roles;
@@ -101,6 +103,18 @@ public class UserEntity {
         this.state = state;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    public String getCredentialsSalt() {
+        return username + salt;
+    }
+
     @Override
     public String toString() {
         return "UserEntity{" +
@@ -109,6 +123,9 @@ public class UserEntity {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", email='" + email + '\'' +
+                ", salt='" + salt + '\'' +
+                ", state=" + state +
+                ", roles=" + roles +
                 '}';
     }
 }

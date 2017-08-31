@@ -1,6 +1,8 @@
 package com.anotherme17.anothernote.action;
 
+import com.anotherme17.anothernote.config.redis.token.RedisTokenManager;
 import com.anotherme17.anothernote.config.shiro.StatelessToken;
+import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.result.BaseResult;
 
 import org.apache.shiro.SecurityUtils;
@@ -11,6 +13,7 @@ import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,12 +36,15 @@ public class CommonAction {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    @Autowired
+    private RedisTokenManager mRedisTokenManager;
+
     @ApiOperation(
             value = "用户登录", notes = "用户登录", httpMethod = "POST",
             produces = "application/json", tags = {"通用"})
     @ResponseBody
     @RequestMapping(value = "login", method = RequestMethod.POST)
-    public BaseResult<StatelessToken> login(
+    public BaseResult<String> login(
             @ApiParam(value = "用户名", required = true) @RequestParam(value = "username") String username,
             @ApiParam(value = "密码", required = true) @RequestParam(value = "password") String password,
             HttpServletResponse response
@@ -69,7 +75,10 @@ public class CommonAction {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); //6、登录失败
             return new BaseResult<>(0, ae.toString(), null);
         }
-        return new BaseResult<>(1, "ok", token);
+
+        UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
+        String tk = mRedisTokenManager.createToken(user.getId()).toString();
+        return new BaseResult<>(1, "ok", tk);
     }
 
     @ApiOperation(
