@@ -47,10 +47,10 @@ public class MyShiroRealm extends AuthorizingRealm {
     private StringRedisTemplate stringRedisTemplate;
 
     //用户登录次数计数  redisKey 前缀
-    private String SHIRO_LOGIN_COUNT = "shiro_login_count_";
+    private String SHIRO_LOGIN_COUNT = "a_note_login_count_";
 
     //用户登录是否被锁定    一小时 redisKey 前缀
-    private String SHIRO_IS_LOCK = "shiro_is_lock_";
+    private String SHIRO_IS_LOCK = "a_note_is_lock_";
 
     public boolean supports(AuthenticationToken token) {
         //仅支持StatelessToken类型的Token
@@ -66,7 +66,7 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-        System.out.println("doGetAuthenticationInfo");
+        //System.out.println("doGetAuthenticationInfo");
         String username = String.valueOf(token.getPrincipal());
         String password = String.valueOf(token.getCredentials());
 
@@ -100,6 +100,7 @@ public class MyShiroRealm extends AuthorizingRealm {
         } else if (user.getState() == UserEntity.STATE_UN_ACTIVE) {
             throw new DisabledAccountException("帐号未激活！");
         } else {
+            /*登录成功后清空登录失败次数*/
             opsForValue.set(SHIRO_LOGIN_COUNT + username, "0");
             mUserService.updateLastLoginTime(user.getId(), new Date());
         }
@@ -114,7 +115,7 @@ public class MyShiroRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println("doGetAuthorizationInfo");
+        //System.out.println("doGetAuthorizationInfo");
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         //根据用户ID查询角色（role），放入到Authorization里。
