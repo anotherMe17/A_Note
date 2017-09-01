@@ -13,6 +13,8 @@ public class StrokePlanEntity {
 
     public static final int ENABLE_NO = 0;
     public static final int ENABLE_YES = 1;
+    public static final int ENABLE_NOT_NOW = 2;
+    public static final int ENABLE_FINISH = 3;
 
     @ApiModelProperty(value = "ID")
     private String id;
@@ -33,10 +35,7 @@ public class StrokePlanEntity {
     private String afterPlanID;
 
     @ApiModelProperty(value = "上一次生成行程的时间")
-    private long lastGenerate;
-
-    @ApiModelProperty(value = "生成行程的周期")
-    private long generateCycle;
+    private Date lastGenerateTime;
 
     @ApiModelProperty(value = "生成行程的规则")
     private String planRule;
@@ -92,20 +91,12 @@ public class StrokePlanEntity {
         this.afterPlanID = afterPlanID;
     }
 
-    public long getLastGenerate() {
-        return lastGenerate;
+    public Date getLastGenerateTime() {
+        return lastGenerateTime;
     }
 
-    public void setLastGenerate(long lastGenerate) {
-        this.lastGenerate = lastGenerate;
-    }
-
-    public long getGenerateCycle() {
-        return generateCycle;
-    }
-
-    public void setGenerateCycle(long generateCycle) {
-        this.generateCycle = generateCycle;
+    public void setLastGenerateTime(Date lastGenerateTime) {
+        this.lastGenerateTime = lastGenerateTime;
     }
 
     public String getPlanRule() {

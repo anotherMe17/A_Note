@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.anotherme17.anothernote.mapper.StrokePlanMapper">
+
+    <resultMap id="strokePlanResultMap" type="StrokePlanEntity">
+        <id property="id" column="ID"/>
+    </resultMap>
+
+    <!--插入行程计划 自动生成主键-->
+    <insert id="insertStrokePlanAutoKey" parameterType="StrokePlanEntity">
+        <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
+            SELECT replace(uuid(),'-','') FROM dual
+        </selectKey>
+        INSERT INTO A_Stroke_Plan
+        (ID,Title,Content,ForUserID,CreateTime,AfterPlanID,LastGenerateTime,PlanRule,Enable)
+        VALUES (#{id},#{title},#{content},#{forUserID},
+        #{createTime,jdbcType=TIMESTAMP},#{afterPlanID},#{lastGenerateTime,jdbcType=TIMESTAMP},
+        #{planRule},#{enable})
+    </insert>
+
+    <select id="getStrokePlainByID" parameterType="java.lang.String"
+            resultMap="strokePlanResultMap">
+        SELECT *
+        FROM A_Stroke_Plan
+        WHERE ID = #{id}
+    </select>
+
+</mapper>

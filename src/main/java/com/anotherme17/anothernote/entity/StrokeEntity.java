@@ -52,6 +52,20 @@ public class StrokeEntity {
     @ApiModelProperty(value = "状态")
     private int state;
 
+    public StrokeEntity() {
+    }
+
+    public StrokeEntity(StrokePlanEntity strokePlan, Date startTime, Date endTime) {
+        this.title = strokePlan.getTitle();
+        this.content = strokePlan.getContent();
+        this.strokePlanID = strokePlan.getId();
+        this.forUserID = strokePlan.getForUserID();
+        this.createTime = new Date();
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.state = STATE_PROCESSING;
+    }
+
     public String getId() {
         return id;
     }

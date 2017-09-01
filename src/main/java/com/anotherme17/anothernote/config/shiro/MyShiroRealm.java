@@ -129,7 +129,7 @@ public class MyShiroRealm extends AuthorizingRealm {
             } else if (user.getState() == UserEntity.STATE_UN_ACTIVE) {
                 throw new DisabledAccountException("帐号未激活！");
             } else {
-            /*登录成功后清空登录失败次数*/
+                /*登录成功后清空登录失败次数*/
                 opsForValue.set(SHIRO_LOGIN_COUNT + username, "0");
                 mUserService.updateLastLoginTime(user.getId(), new Date());
             }

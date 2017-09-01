@@ -42,6 +42,7 @@ public class StrokeAction {
         stroke.setId(null);
         stroke.setCreateTime(new Date());
         mStrokeService.insertStrokeAutoKey(stroke);
+
         return new BaseResult<>(1, "ok", stroke);
     }
 
