@@ -3,7 +3,11 @@ package com.anotherme17.anothernote.mapper;
 import com.anotherme17.anothernote.entity.StrokeEntity;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  *
@@ -31,4 +35,6 @@ public interface StrokeMapper {
      * 通过ID获取行程
      */
     StrokeEntity getStrokeByID(String id);
+
+    List<StrokeEntity> getStrokeInDate(@Param("left") Date left, @Param("right") Date right);
 }

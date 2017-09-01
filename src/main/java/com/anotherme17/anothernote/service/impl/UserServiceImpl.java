@@ -66,4 +66,9 @@ public class UserServiceImpl implements UserService {
     public List<UserEntity> authentication(String username, String password) {
         return mUserMapper.authentication(username, password);
     }
+
+    @Override
+    public List<UserEntity> getUserStrokeInDay(Date left, Date right) {
+        return mUserMapper.getUserStrokeInDay(left, right);
+    }
 }

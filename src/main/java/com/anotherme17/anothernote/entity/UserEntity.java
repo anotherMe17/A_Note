@@ -35,7 +35,12 @@ public class UserEntity {
 
     private int state = STATE_UN_ACTIVE;
 
+    @ApiModelProperty(value = "是否开启邮件通知服务")
+    private boolean emailStroke;
+
     private Set<RoleEntity> roles;
+
+    private Set<StrokeEntity> strokes;
 
     public UserEntity() {
     }
@@ -45,6 +50,22 @@ public class UserEntity {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public boolean isEmailStroke() {
+        return emailStroke;
+    }
+
+    public void setEmailStroke(boolean emailStroke) {
+        this.emailStroke = emailStroke;
+    }
+
+    public Set<StrokeEntity> getStrokes() {
+        return strokes;
+    }
+
+    public void setStrokes(Set<StrokeEntity> strokes) {
+        this.strokes = strokes;
     }
 
     public Set<RoleEntity> getRoles() {

@@ -58,4 +58,14 @@
         WHERE ID = #{id}
     </select>
 
+    <select id="getStrokeInDate" resultMap="strokeResultMap">
+        SELECT ID,Title,Content,StrokePlanID,ForUserID,CreateTime,StartTime,EndTime,State
+        FROM A_Stroke
+        <![CDATA[
+        WHERE StartTime >= #{left,jdbcType=TIMESTAMP}
+        AND StartTime < #{right,jdbcType=TIMESTAMP}
+        AND State = 0
+        ]]>
+    </select>
+
 </mapper>

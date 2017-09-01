@@ -19,6 +19,23 @@
         <result property="email" column="Email"/>
     </resultMap>
 
+    <resultMap id="userStrokeMap" type="UserEntity">
+        <id property="id" column="ID"/>
+        <result property="username" column="UserName"/>
+        <result property="email" column="Email"/>
+        <collection property="strokes" ofType="StrokeEntity">
+            <id property="id" column="ID"/>
+            <result property="title" column="Title"/>
+            <result property="content" column="Content"/>
+            <result property="strokePlanID" column="StrokePlanID"/>
+            <result property="forUserID" column="ForUserID"/>
+            <result property="createTime" column="CreateTime"/>
+            <result property="startTime" column="StartTime"/>
+            <result property="endTime" column="EndTime"/>
+            <result property="state" column="State"/>
+        </collection>
+    </resultMap>
+
     <!--插入用户  自动生成主键-->
     <insert id="insertUserAutoKey" parameterType="UserEntity">
         <selectKey keyProperty="id" resultType="java.lang.String" order="BEFORE">
@@ -81,6 +98,18 @@
         SELECT * FROM A_User
         WHERE UserName = #{username}
         AND Password = #{password}
+    </select>
+
+    <select id="getUserStrokeInDay" resultMap="userStrokeMap">
+        SELECT u.ID,u.UserName,u.Email,
+        s.ID,s.Title,s.Content,s.StrokePlanID,s.ForUserID,
+        s.CreateTime,s.StartTime,s.EndTime,s.State
+        FROM A_User u
+        INNER JOIN A_Stroke s ON s.ForUserID = u.ID
+        AND  <![CDATA[ s.StartTime >= #{left,jdbcType=TIMESTAMP} ]]>
+        AND  <![CDATA[ s.StartTime < #{right,jdbcType=TIMESTAMP} ]]>
+        WHERE u.EmailStroke = 1
+        AND u.State = 1
     </select>
 
     <sql id="getUsersWhere">

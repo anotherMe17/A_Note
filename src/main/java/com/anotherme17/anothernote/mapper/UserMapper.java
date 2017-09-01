@@ -53,4 +53,6 @@ public interface UserMapper {
 
     List<UserEntity> authentication(@Param("username") String username, @Param("password") String password);
 
+    List<UserEntity> getUserStrokeInDay(@Param("left") Date left, @Param("right") Date right);
+
 }

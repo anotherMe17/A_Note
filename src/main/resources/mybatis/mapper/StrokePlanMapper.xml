@@ -5,6 +5,14 @@
 
     <resultMap id="strokePlanResultMap" type="StrokePlanEntity">
         <id property="id" column="ID"/>
+        <result property="title" column="Title"/>
+        <result property="content" column="Content"/>
+        <result property="forUserID" column="ForUserID"/>
+        <result property="createTime" column="CreateTime"/>
+        <result property="afterPlanID" column="AfterPlanID"/>
+        <result property="lastGenerateTime" column="LastGenerateTime"/>
+        <result property="planRule" column="PlanRule"/>
+        <result property="enable" column="Enable"/>
     </resultMap>
 
     <!--插入行程计划 自动生成主键-->
@@ -19,11 +27,27 @@
         #{planRule},#{enable})
     </insert>
 
+    <update id="updateStrokePlan" parameterType="StrokePlanEntity">
+        UPDATE A_Stroke_Plan sp
+        <set>
+            <if test="lastGenerateTime !=null">
+                sp.LastGenerateTime = #{lastGenerateTime,jdbcType=TIMESTAMP}
+            </if>
+        </set>
+    </update>
+
     <select id="getStrokePlainByID" parameterType="java.lang.String"
             resultMap="strokePlanResultMap">
-        SELECT *
+        SELECT ID,Title,Content,ForUserID,CreateTime,AfterPlanID,LastGenerateTime,PlanRule,Enable
         FROM A_Stroke_Plan
         WHERE ID = #{id}
+    </select>
+
+    <select id="getStrokePlanBeforeDate" parameterType="java.util.Date"
+            resultMap="strokePlanResultMap">
+        SELECT ID,Title,Content,ForUserID,CreateTime,AfterPlanID,LastGenerateTime,PlanRule,Enable
+        FROM A_Stroke_Plan
+       <![CDATA[ WHERE LastGenerateTime <= #{date}]]>
     </select>
 
 </mapper>

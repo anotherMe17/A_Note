@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * StrokePlanServiceImpl
@@ -76,5 +77,48 @@ public class StrokePlanServiceImpl implements StrokePlanService {
         } else {
             mStrokePlanMapper.insertStrokePlanAutoKey(strokePlan);
         }
+    }
+
+    @Override
+    public int generateStrokePlanBeforeDate(Date date) {
+        /*获取所有需要生成行程的计划*/
+        int strokeSize = 0;
+        List<StrokePlanEntity> strokePlans = mStrokePlanMapper.getStrokePlanBeforeDate(date);
+        for (StrokePlanEntity strokePlan : strokePlans) {
+            if (generateStrokePlan(strokePlan, date)) {
+                strokeSize++;
+            }
+        }
+        return strokeSize;
+    }
+
+    private boolean generateStrokePlan(StrokePlanEntity strokePlan, Date date) {
+        boolean isCreate = false;
+        if (strokePlan.getLastGenerateTime() == null
+                || strokePlan.getLastGenerateTime().before(new Date())) {
+
+            if (TextUtils.isEmpty(strokePlan.getPlanRule()))
+                return false;
+
+            if (strokePlan.getEnable() != StrokePlanEntity.ENABLE_YES)
+                return false;
+
+            /*解析planRule转换成对象*/
+            PlanRule rule = JSON.parseObject(strokePlan.getPlanRule(), PlanRule.class);
+
+            if (PlanRuleUtils.ifCreateStroke(rule, date)) {
+                /*生成行程*/
+                StrokeEntity stroke = new StrokeEntity(strokePlan,
+                        PlanRuleUtils.getStrokeTime(date, rule.getStartTime()),
+                        PlanRuleUtils.getStrokeTime(date, rule.getEndTime()));
+                mStrokeMapper.insertStrokeAutoKey(stroke);
+                isCreate = true;
+            }
+        }
+        /*设置行程计划的最后生成时间*/
+        strokePlan.setLastGenerateTime(date);
+            /*更新行程计划*/
+        mStrokePlanMapper.updateStrokePlan(strokePlan);
+        return isCreate;
     }
 }

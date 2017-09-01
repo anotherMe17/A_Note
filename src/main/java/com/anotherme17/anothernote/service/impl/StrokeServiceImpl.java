@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  *
  */
@@ -36,5 +39,10 @@ public class StrokeServiceImpl implements StrokeService {
     @Override
     public StrokeEntity getStrokeByID(String id) {
         return mStrokeMapper.getStrokeByID(id);
+    }
+
+    @Override
+    public List<StrokeEntity> getStrokeInDate(Date left, Date right) {
+        return mStrokeMapper.getStrokeInDate(left, right);
     }
 }

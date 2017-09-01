@@ -33,4 +33,6 @@ public interface UserService {
     void updateLastLoginTime(String id, Date loginTime);
 
     List<UserEntity> authentication(String username, String password);
+
+    List<UserEntity> getUserStrokeInDay(Date left, Date right);
 }
