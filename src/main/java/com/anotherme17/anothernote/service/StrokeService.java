@@ -12,9 +12,12 @@ public interface StrokeService {
 
     void insertStrokeAutoKey(StrokeEntity stroke);
 
-    void deleteStroke(String id);
+    /**
+     * 删除行程
+     */
+    int deleteStroke(String id);
 
-    void updateStroke(StrokeEntity stroke);
+    int updateStroke(StrokeEntity stroke);
 
     StrokeEntity getStrokeByID(String id);
 

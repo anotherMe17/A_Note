@@ -18,6 +18,11 @@ public class BaseResult<T> {
     @ApiModelProperty(value = "数据")
     private T data;
 
+    public BaseResult(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     public BaseResult(int code, String msg, T data) {
         this.code = code;
         this.msg = msg;
