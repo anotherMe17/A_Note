@@ -3,6 +3,7 @@ package com.anotherme17.anothernote.test;
 import com.alibaba.fastjson.JSON;
 import com.anotherme17.anothernote.entity.PlanRule;
 import com.anotherme17.anothernote.utils.DateUtils;
+import com.anotherme17.wxRobot.WechatService;
 
 import org.junit.Test;
 
@@ -47,5 +48,12 @@ public class JsonTest {
         }
 
         System.out.println(DateUtils.formatDate(date));
+    }
+
+    @Test
+    public void testWeChat() {
+        System.setProperty ("jsse.enableSNIExtension", "false");
+        WechatService startUI = new WechatService();
+        startUI.start();
     }
 }

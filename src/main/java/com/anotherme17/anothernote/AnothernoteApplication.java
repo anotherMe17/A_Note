@@ -17,7 +17,7 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 @EnableAutoConfiguration
 @EnableScheduling
-public class AnothernoteApplication {
+public class AnothernoteApplication /*extends SpringBootServletInitializer */{
 
     /*Swagger*/
     @Bean
@@ -28,6 +28,11 @@ public class AnothernoteApplication {
                 .apiInfo(apiInfo).useDefaultResponseMessages(false);
         return docket;
     }
+
+   /* @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(AnothernoteApplication.class);
+    }*/
 
     public static void main(String[] args) {
         SpringApplication.run(AnothernoteApplication.class, args);
