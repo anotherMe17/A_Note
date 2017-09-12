@@ -1,11 +1,21 @@
 package com.anotherme17.anothernote.result;
 
+import com.anotherme17.anothernote.config.code.ResultCode;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 /**
  *
  */
+@Builder
+@Data
+@Accessors(chain = true)
+@RequiredArgsConstructor(staticName = "of")
 @ApiModel(value = "Result", description = "返回结果")
 public class BaseResult<T> {
 
@@ -29,27 +39,11 @@ public class BaseResult<T> {
         this.data = data;
     }
 
-    public int getCode() {
-        return code;
+    public static <T> BaseResult<T> ofResult(ResultCode resultCode, T data) {
+        return new BaseResult<T>(resultCode.getCode(), resultCode.getMsg(), data);
     }
 
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMsg() {
-        return msg;
-    }
-
-    public void setMsg(String msg) {
-        this.msg = msg;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
+    public static <T> BaseResult<T> ofResult(ResultCode resultCode) {
+        return new BaseResult<T>(resultCode.getCode(), resultCode.getMsg());
     }
 }

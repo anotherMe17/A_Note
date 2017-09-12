@@ -1,5 +1,6 @@
 package com.anotherme17.anothernote.service;
 
+import com.anotherme17.anothernote.config.code.ResultCode;
 import com.anotherme17.anothernote.entity.StrokeEntity;
 
 import java.util.Date;
@@ -15,9 +16,9 @@ public interface StrokeService {
     /**
      * 删除行程
      */
-    int deleteStroke(String id);
+    ResultCode deleteStroke(String id);
 
-    int updateStroke(StrokeEntity stroke);
+    ResultCode updateStroke(StrokeEntity stroke);
 
     StrokeEntity getStrokeByID(String id);
 

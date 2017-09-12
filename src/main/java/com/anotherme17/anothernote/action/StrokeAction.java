@@ -1,5 +1,8 @@
 package com.anotherme17.anothernote.action;
 
+import com.anotherme17.anothernote.config.code.ResultCode;
+import com.anotherme17.anothernote.dto.stroke.StrokeInputDTO;
+import com.anotherme17.anothernote.dto.stroke.StrokeOutputDTO;
 import com.anotherme17.anothernote.entity.StrokeEntity;
 import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.result.BaseResult;
@@ -10,14 +13,13 @@ import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -30,6 +32,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(value = "/strokes", description = "行程接口")
 @Controller
+@Validated
 @RequestMapping(value = "v1/strokes")
 public class StrokeAction {
 
@@ -42,16 +45,16 @@ public class StrokeAction {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @RequiresPermissions(value = {"stroke:common:create"}, logical = Logical.OR)
-    public BaseResult<StrokeEntity> postStroke(
-            @ModelAttribute StrokeEntity stroke,
+    public BaseResult<StrokeOutputDTO> postStroke(
+            @Validated({StrokeInputDTO.CREATE.class}) @ModelAttribute StrokeInputDTO strokeInputDTO,
             HttpServletResponse response
     ) {
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        stroke.setId(null);
-        stroke.setCreateTime(new Date());
+        StrokeEntity stroke = strokeInputDTO.convertToStroke();
         stroke.setForUserID(user.getId());
         mStrokeService.insertStrokeAutoKey(stroke);
-        return new BaseResult<>(1, "ok", stroke);
+        StrokeOutputDTO strokeOutputDTO = new StrokeOutputDTO().convertFor(stroke);
+        return BaseResult.ofResult(ResultCode.OK, strokeOutputDTO);
     }
 
     @ApiOperation(
@@ -60,17 +63,9 @@ public class StrokeAction {
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     @RequiresPermissions(value = {"stroke:common:del"}, logical = Logical.OR)
-    public BaseResult<String> deleteStroke(@PathVariable String id) {
-        switch (mStrokeService.deleteStroke(id)) {
-            case 0:
-                return new BaseResult<>(0, "该行程不存在");
-            case 1:
-                return new BaseResult<>(1, "删除成功");
-            case 2:
-                return new BaseResult<>(0, "不能删除他人的行程");
-            default:
-                return new BaseResult<>(0, "未知错误");
-        }
+    public BaseResult deleteStroke(@PathVariable String id) {
+        ResultCode resultCode = mStrokeService.deleteStroke(id);
+        return BaseResult.ofResult(resultCode);
     }
 
     @ApiOperation(
@@ -79,21 +74,14 @@ public class StrokeAction {
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     @RequiresPermissions(value = {"stroke:common:update"}, logical = Logical.OR)
-    public BaseResult<String> putStroke(
+    public BaseResult putStroke(
             @PathVariable String id,
-            @ModelAttribute StrokeEntity stroke
+            @ModelAttribute StrokeInputDTO strokeInputDTO
     ) {
+        StrokeEntity stroke = strokeInputDTO.convertToStroke();
         stroke.setId(id);
-        switch (mStrokeService.updateStroke(stroke)) {
-            case 0:
-                return new BaseResult<>(0, "该行程不存在");
-            case 1:
-                return new BaseResult<>(1, "修改成功");
-            case 2:
-                return new BaseResult<>(0, "不能修改他人的行程");
-            default:
-                return new BaseResult<>(0, "未知错误");
-        }
+        ResultCode resultCode = mStrokeService.updateStroke(stroke);
+        return BaseResult.ofResult(resultCode);
     }
 
     @ApiOperation(
@@ -102,8 +90,10 @@ public class StrokeAction {
     @ResponseBody
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     @RequiresPermissions(value = {"stroke:common:get"}, logical = Logical.OR)
-    public BaseResult<StrokeEntity> getStroke(@PathVariable String id) {
-        return new BaseResult<>(1, "ok", mStrokeService.getStrokeByID(id));
+    public BaseResult<StrokeOutputDTO> getStroke(@PathVariable String id) {
+        StrokeEntity stroke = mStrokeService.getStrokeByID(id);
+        StrokeOutputDTO strokeOutputDTO = new StrokeOutputDTO().convertFor(stroke);
+        return BaseResult.ofResult(ResultCode.OK, strokeOutputDTO);
     }
 
     @ApiOperation(
@@ -112,9 +102,11 @@ public class StrokeAction {
     @ResponseBody
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @RequiresPermissions(value = {"stroke:common:list"}, logical = Logical.OR)
-    public BaseResult<StrokeEntity> getStrokeList(
+    public BaseResult<StrokeOutputDTO> getStrokeList(
             @ApiParam(value = "第几页", required = true) @RequestParam(value = "page") int page,
             @ApiParam(value = "每页多少行", required = true) @RequestParam(value = "rows") int rows) {
+
+
         return new BaseResult<>(1, "ok");
     }
 }

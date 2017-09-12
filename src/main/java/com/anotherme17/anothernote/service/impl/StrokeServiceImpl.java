@@ -1,5 +1,6 @@
 package com.anotherme17.anothernote.service.impl;
 
+import com.anotherme17.anothernote.config.code.ResultCode;
 import com.anotherme17.anothernote.entity.StrokeEntity;
 import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.mapper.StrokeMapper;
@@ -12,6 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+
+import static com.anotherme17.anothernote.config.code.ResultCode.DELETE_REFUSE;
+import static com.anotherme17.anothernote.config.code.ResultCode.OK;
+import static com.anotherme17.anothernote.config.code.ResultCode.UNKNOWN_RECORD;
 
 /**
  *
@@ -29,32 +34,32 @@ public class StrokeServiceImpl implements StrokeService {
     }
 
     @Override
-    public int deleteStroke(String id) {
+    public ResultCode deleteStroke(String id) {
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
 
         StrokeEntity stroke = mStrokeMapper.getStrokeByID(id);
         if (stroke == null)
-            return 0;
+            return UNKNOWN_RECORD;
 
         if (!user.getId().equals(stroke.getForUserID()))
-            return 2;
+            return DELETE_REFUSE;
 
         mStrokeMapper.deleteStroke(id);
-        return 1;
+        return OK;
     }
 
     @Override
-    public int updateStroke(StrokeEntity stroke) {
+    public ResultCode updateStroke(StrokeEntity stroke) {
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
 
         StrokeEntity s = mStrokeMapper.getStrokeByID(stroke.getId());
         if (s == null)
-            return 0;
+            return UNKNOWN_RECORD;
 
         if (!user.getId().equals(s.getForUserID()))
-            return 2;
+            return DELETE_REFUSE;
         mStrokeMapper.updateStroke(stroke);
-        return 1;
+        return OK;
     }
 
     @Override
