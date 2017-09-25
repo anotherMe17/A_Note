@@ -3,6 +3,8 @@ package com.anotherme17.anothernote;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -17,7 +19,10 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @EnableSwagger2
 @EnableAutoConfiguration
 @EnableScheduling
-public class AnothernoteApplication /*extends SpringBootServletInitializer */{
+@EnableCaching// 标注启动了缓存
+public class AnothernoteApplication /*extends SpringBootServletInitializer */ {
+
+    private static ConfigurableApplicationContext sContext;
 
     /*Swagger*/
     @Bean
@@ -35,6 +40,10 @@ public class AnothernoteApplication /*extends SpringBootServletInitializer */{
     }*/
 
     public static void main(String[] args) {
-        SpringApplication.run(AnothernoteApplication.class, args);
+        sContext = SpringApplication.run(AnothernoteApplication.class, args);
+    }
+
+    public static <T> T getBean(String name, Class<T> aClass) {
+        return sContext.getBean(name, aClass);
     }
 }
