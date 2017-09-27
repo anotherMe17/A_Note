@@ -4,6 +4,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -26,6 +27,8 @@ public class ShiroConfiguration {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
         //设置realm
         securityManager.setRealm(myShiroRealm());
+
+        securityManager.setSessionManager(shiroSessionManager());
         return securityManager;
     }
 
@@ -54,7 +57,7 @@ public class ShiroConfiguration {
         shiroFilterFactoryBean.setUnauthorizedUrl("/403");
 
         //拦截器.
-        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+        Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
 
         /*不要让shiro警用swagger的资源*/
         filterChainDefinitionMap.put("/swagger-ui.html", "anon");
@@ -113,5 +116,16 @@ public class ShiroConfiguration {
     public MyShiroRealm myShiroRealm() {
         MyShiroRealm myShiroRealm = new MyShiroRealm();
         return myShiroRealm;
+    }
+
+    @Bean
+    public DefaultWebSessionManager shiroSessionManager() {
+        DefaultWebSessionManager sessionManager = new DefaultWebSessionManager();
+
+        sessionManager.setGlobalSessionTimeout(1800000);
+        sessionManager.setDeleteInvalidSessions(true);
+        sessionManager.setSessionValidationSchedulerEnabled(true);
+
+        return sessionManager;
     }
 }
