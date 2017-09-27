@@ -1,8 +1,8 @@
 package com.anotherme17.anothernote;
 
 import com.anotherme17.anothernote.mapper.PermissionMapper;
-import com.anotherme17.anothernote.mapper.RoleMapper;
 import com.anotherme17.anothernote.mapper.UserMapper;
+import com.anotherme17.anothernote.service.RoleService;
 import com.anotherme17.anothernote.service.impl.MailService;
 
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class AnothernoteApplicationTests {
     UserMapper mUserMapper;
 
     @Autowired
-    RoleMapper mRoleMapper;
+    RoleService mRoleService;
 
     @Autowired
     PermissionMapper mPermissionMapper;
@@ -34,6 +34,13 @@ public class AnothernoteApplicationTests {
 
         mailService.sendSimpleMail("411867400@qq.com", "主题：简单邮件", "测试邮件内容");
 
+    }
+
+    @Test
+    @Transactional
+    public void ehcacheTest() {
+        System.out.println(mRoleService.getRoleByUserID("4979bd0b896a11e780b84ccc6a6d905e"));
+        System.out.println(mRoleService.getRoleByUserID("4979bd0b896a11e780b84ccc6a6d905e"));
     }
 
 }
