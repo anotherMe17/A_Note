@@ -1,4 +1,4 @@
-package com.anotherme17.anothernote.config.redis.token;
+package com.anotherme17.anothernote.config.cache.token;
 
 /**
  * Created by Administrator on 2017/8/31.

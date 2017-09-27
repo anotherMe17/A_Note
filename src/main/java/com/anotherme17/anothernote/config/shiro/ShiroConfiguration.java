@@ -4,8 +4,8 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,7 +18,7 @@ import javax.servlet.Filter;
  * 既然是使用 Filter 一般也就能猜到，是通过URL规则来进行过滤和权限校验，
  * 所以我们需要定义一系列关于URL的规则和访问权限。
  */
-@Configuration
+@SpringBootApplication
 public class ShiroConfiguration {
 
     @Bean
@@ -91,29 +91,18 @@ public class ShiroConfiguration {
     }
 
     /**
-     *  开启shiro aop注解支持.
-     *  使用代理方式;所以需要开启代码支持;
+     * 开启shiro aop注解支持.
+     * 使用代理方式;所以需要开启代码支持;
+     *
      * @param securityManager
      * @return
      */
     @Bean
-    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager){
+    public AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor(SecurityManager securityManager) {
         AuthorizationAttributeSourceAdvisor authorizationAttributeSourceAdvisor = new AuthorizationAttributeSourceAdvisor();
         authorizationAttributeSourceAdvisor.setSecurityManager(securityManager);
         return authorizationAttributeSourceAdvisor;
     }
-
-    /**
-     * Add.4.1
-     * 访问控制器.
-     *
-     * @return
-     */
-/*    @Bean
-    public StatelessAccessControlFilter statelessAuthcFilter() {
-        StatelessAccessControlFilter statelessAuthcFilter = new StatelessAccessControlFilter();
-        return statelessAuthcFilter;
-    }*/
 
     /**
      * 身份认证realm; (这个需要自己写，账号密码校验；权限等)

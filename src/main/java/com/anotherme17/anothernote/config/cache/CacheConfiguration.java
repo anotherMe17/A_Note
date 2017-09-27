@@ -1,7 +1,6 @@
 package com.anotherme17.anothernote.config.cache;
 
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,8 @@ import org.springframework.core.io.ClassPathResource;
 /**
  * 缓存
  */
-@SpringBootApplication
+/*@SpringBootApplication
+@EnableCaching// 标注启动了缓存*/
 public class CacheConfiguration {
 
     /**

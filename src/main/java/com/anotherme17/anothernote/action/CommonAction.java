@@ -1,6 +1,6 @@
 package com.anotherme17.anothernote.action;
 
-import com.anotherme17.anothernote.config.redis.token.RedisTokenManager;
+import com.anotherme17.anothernote.config.cache.token.manager.EhcacheTokenManager;
 import com.anotherme17.anothernote.config.shiro.StatelessToken;
 import com.anotherme17.anothernote.entity.UserEntity;
 import com.anotherme17.anothernote.result.BaseResult;
@@ -37,7 +37,7 @@ public class CommonAction {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private RedisTokenManager mRedisTokenManager;
+    private EhcacheTokenManager mEhcacheTokenManager;
 
     @ApiOperation(
             value = "用户登录", notes = "用户登录", httpMethod = "POST",
@@ -77,7 +77,7 @@ public class CommonAction {
         }
 
         UserEntity user = (UserEntity) SecurityUtils.getSubject().getPrincipal();
-        String tk = mRedisTokenManager.createToken(user.getId()).toString();
+        String tk = mEhcacheTokenManager.createToken(user.getId()).toString();
         return new BaseResult<>(1, "ok", tk);
     }
 
